@@ -1,29 +1,69 @@
-import express from "express"
-import dotenv from "dotenv"
-import colors from "colors"
-import connectDB from "../config/dbconfig.js"
+import express from "express";
+import dotenv from "dotenv";
+import colors from "colors";
 
-dotenv.config()
+// Local routes
+import connectDB from "./config/dbconfig.js";
+import errorHandler from "./middleware/errorHandler.js";
 
+import authRoutes from "./routes/authRoutes.js";
+import adminRoutes from "./routes/adminRoutes.js"
+import eventRoutes from "./routes/eventRoutes.js"
+import orderRoutes from "./routes/orderRoutes.js"
+
+dotenv.config();
 
 //DB CONNECTION
 
-connectDB()
+connectDB();
 
-const PORT = process.env.PORT || 5000
 
-const app = express()
+const PORT = process.env.PORT || 5000;
+const app = express();
+
+
+//Body-Parser
+
+app.use(express.json())
+app.use(express.urlencoded())
+
+
 
 
 // default Route
 
+app.get("/", (req, res) => {
+  res.json({
+    message: "WELCOME TO MOODGO API",
+  });
+});
 
-app.get("/",(req,res)=>{
+// Auth Routes
 
-    res.json ({
-        message : "WELCOME TO MOODGO API"
-    })
+app.use("/api/auth", authRoutes);
 
-})
+// Admin Routes
 
-app.listen(PORT, ()=>console.log(`SERVER IS RUNNING AT PORT : ${PORT} `.bgBlue.white))
+app.use("/api/admin", adminRoutes)
+
+// Event Routes
+
+app.use("/api/events", eventRoutes)
+
+//order Routes
+
+app.use("/api/order" , orderRoutes)
+
+
+
+// Error Handler
+
+app.use(errorHandler)
+
+
+
+
+app.listen(PORT, () =>
+  console.log(`SERVER IS RUNNING AT PORT : ${PORT} `.bgBlue.white),
+);
+
