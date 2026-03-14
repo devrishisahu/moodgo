@@ -12,6 +12,10 @@ const orderSchema = new mongoose.Schema(
       ref: "Event",
       required: true,
     },
+    seats: {
+      type: Number,
+      required: true,
+    },
     status: {
       type: String,
       enum: ["pending", "confirmed", "cancelled", "expired"],
@@ -19,12 +23,12 @@ const orderSchema = new mongoose.Schema(
       default: "pending",
     },
     isDiscounted: {
-        type: Boolean,
-        default : false
+      type: Boolean,
+      default: false,
     },
     billedAmount: {
-        type : Number,
-        required : true
+      type: Number,
+      required: true,
     },
   },
   {
@@ -32,7 +36,6 @@ const orderSchema = new mongoose.Schema(
   },
 );
 
+const Order = mongoose.model("Order", orderSchema);
 
-const Order = mongoose.model('Order' , orderSchema)
-
-export default Order
+export default Order;
