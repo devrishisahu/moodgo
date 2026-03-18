@@ -43,6 +43,12 @@ const eventSchema = new mongoose.Schema(
       type: Number,
       required: [true, "Please Enter Event Ticket Price"],
     },
+    status: {
+      type: String,
+      enum: ["upcoming", "ongoing", "cancelled", "expired"],
+      required: true,
+      default: "upcoming",
+    },
     isActive: {
       type: Boolean,
       required: true,
@@ -56,5 +62,4 @@ const eventSchema = new mongoose.Schema(
 
 const Event = mongoose.model("Event", eventSchema);
 
-
-export default Event
+export default Event;

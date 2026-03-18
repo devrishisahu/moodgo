@@ -59,7 +59,7 @@ const loginUser = async (req, res) => {
     throw new Error("Please Fill All Details");
   }
 
-  //Cheack if User exists
+  //Check if User exists
 
   let user = await User.findOne({ email: email });
 

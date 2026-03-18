@@ -7,9 +7,10 @@ import connectDB from "./config/dbconfig.js";
 import errorHandler from "./middleware/errorHandler.js";
 
 import authRoutes from "./routes/authRoutes.js";
-import adminRoutes from "./routes/adminRoutes.js"
-import eventRoutes from "./routes/eventRoutes.js"
-import orderRoutes from "./routes/orderRoutes.js"
+import adminRoutes from "./routes/adminRoutes.js";
+import eventRoutes from "./routes/eventRoutes.js";
+import orderRoutes from "./routes/orderRoutes.js";
+import commentRoutes from "./routes/commentRoutes.js"
 
 dotenv.config();
 
@@ -17,18 +18,13 @@ dotenv.config();
 
 connectDB();
 
-
 const PORT = process.env.PORT || 5000;
 const app = express();
 
-
 //Body-Parser
 
-app.use(express.json())
-app.use(express.urlencoded())
-
-
-
+app.use(express.json());
+app.use(express.urlencoded());
 
 // default Route
 
@@ -44,24 +40,23 @@ app.use("/api/auth", authRoutes);
 
 // Admin Routes
 
-app.use("/api/admin", adminRoutes)
+app.use("/api/admin", adminRoutes);
 
 // Event Routes
 
-app.use("/api/events", eventRoutes)
+app.use("/api/events", eventRoutes);
 
-//order Routes
+//order Routes & Ticket Booking Routes
 
-app.use("/api/order" , orderRoutes)
+app.use("/api/order", orderRoutes);
 
+// Comment Routes
 
+app.use("/api/comment/" , commentRoutes)
 
 // Error Handler
 
-app.use(errorHandler)
-
-
-
+app.use(errorHandler);
 
 app.listen(PORT, () =>
   console.log(`SERVER IS RUNNING AT PORT : ${PORT} `.bgBlue.white),

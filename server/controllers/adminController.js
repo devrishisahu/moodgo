@@ -1,6 +1,7 @@
 import User from "../models/userModel.js";
 import Event from"../models/eventModel.js";
 import Coupon from "../models/CouponModel.js";
+import Order from "../models/orderModel.js";
 
 const getAllUsers = async(req, res) => {
 
@@ -55,8 +56,15 @@ const getAllRatings = (req, res) => {
 };
 
 
-const getAllOrders = (req, res) => {
-  res.send("All Orders!");
+const getAllOrders = async(req, res) => {
+ 
+  const orders = await Order.find()
+
+  if(!orders){
+    res.status(404)
+    throw new Error("Orders Not Found!")
+  }
+  res.status(200).json(orders)
 };
 
 const createCoupon = async(req, res)=>{
