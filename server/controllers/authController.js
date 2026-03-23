@@ -46,7 +46,8 @@ const registerUser = async (req, res) => {
     phone: user.phone,
     isAdmin: user.isAdmin,
     isActive: user.isActive,
-    token: generateToken(user._id)
+    credits: user.credits,
+    token: generateToken(user._id),
   });
 };
 
@@ -71,6 +72,7 @@ const loginUser = async (req, res) => {
       phone: user.phone,
       isAdmin: user.isAdmin,
       isActive: user.isActive,
+      credits: user.credits,
       token: generateToken(user._id),
     });
   } else {
@@ -88,7 +90,7 @@ const privateController = (req, res) => {
 //Generate token
 
 export const generateToken = (id) => {
-  return jwt.sign({id} , process.env.JWT_SECRET , {expiresIn: '10d'});
+  return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: "10d" });
 };
 
 const authController = { registerUser, loginUser, privateController };

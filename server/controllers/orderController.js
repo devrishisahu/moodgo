@@ -1,6 +1,7 @@
 import Coupon from "../models/CouponModel.js";
 import Event from "../models/eventModel.js";
 import Order from "../models/orderModel.js";
+import User from "../models/userModel.js";
 
 const getTickets = async (req, res) => {
   const myTickets = await Order.find({ user: req.user._id })
@@ -58,7 +59,7 @@ const bookTicket = async (req, res) => {
     throw new Error("Seats not Available");
   }
 
-  //   check if user have already booked 5 seats
+  // check if user have already booked 5 seats
 
   const allPreviousOrders = await Order.find({ event: event._id });
 
@@ -90,6 +91,19 @@ const bookTicket = async (req, res) => {
       throw new Error("Invalid Coupon code...");
     }
   }
+  
+  const totalBillAmount = couponCode
+     ? (event.ticketPrice -(event.ticketPrice * couponExists.couponDiscount) / 100) * numberOfSeats
+     : event.ticketPrice * numberOfSeats
+
+  //Find User
+
+  const user = await User.findById(userId)
+
+      if(totalBillAmount > user.credits){
+        res.status(409)
+        throw new Error(" Not Enough Credits! Please Recharge")
+      }
 
   let order = await Order.create({
     user: req.user.id,
@@ -97,13 +111,10 @@ const bookTicket = async (req, res) => {
     seats: numberOfSeats,
     status: "confirmed",
     isDiscounted: couponCode ? true : false,
-    billedAmount: couponCode
-      ? (event.ticketPrice -
-          (event.ticketPrice * couponExists.couponDiscount) / 100) *
-        numberOfSeats
-      : event.ticketPrice * numberOfSeats,
+    billedAmount: totalBillAmount
   });
 
+ 
   // Deacrease Available Seats
 
   let updatedSeats = event.totalSeats - numberOfSeats;
@@ -114,6 +125,11 @@ const bookTicket = async (req, res) => {
     { new: true },
   );
 
+  // Decrease Credits
+
+  await User.findByIdAndUpdate(userId , {credits : user.credits - totalBillAmount } ,{new : true})
+
+
   if (!order) {
     res.status(409);
     throw new Error("Order Not Accepted");
@@ -123,8 +139,13 @@ const bookTicket = async (req, res) => {
   res.send("Ticket booked");
 };
 
+
 const cancelTicket = async (req, res) => {
-  //find Ticket
+
+  let userId = req.user._id
+  
+  //Find Ticket
+
   const ticketId = req.params.tid;
 
   let ticket = await Order.findById(ticketId);
@@ -142,13 +163,16 @@ const cancelTicket = async (req, res) => {
   //Find Event
   const event = await Event.findOne(ticket.event);
 
+  //Find User
+  const user = await User.findById(userId)
+
   // Check Ticket Status
   if (ticket.status === "expired") {
     res.status(409);
     throw new Error(" Ticket Already Expired ...");
   }
 
-  //Increse Seats
+  //Increase Seats
 
   let updatedSeats = event.totalSeats + ticket.seats;
 
@@ -157,6 +181,10 @@ const cancelTicket = async (req, res) => {
     { totalSeats: updatedSeats },
     { new: true },
   );
+
+  // Increase Credits
+
+  await User.findByIdAndUpdate(userId , {credits : user.credits + ticket.billedAmount } ,{new : true})
 
   const updatedTicket = await Order.findByIdAndUpdate(
     ticket._id,

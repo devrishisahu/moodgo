@@ -6,6 +6,7 @@ const router = express.Router()
 
 
 router.get ("/users",protect.forAdmin , adminController.getAllUsers)
+router.put ("/users/:uid",protect.forAdmin , adminController.updateUser)
 router.get ("/events",protect.forAdmin , adminController.getAllEvents)
 router.put ("/events/:eid",protect.forAdmin , adminController.updateEvent)
 router.get ("/orders",protect.forAdmin , adminController.getAllOrders)

@@ -26,19 +26,22 @@ const addComment = async (req, res) => {
   const eventId = req.params.eid;
   const userId = req.user._id;
 
-  const event = await Event.findById( eventId );
+  const event = await Event.findById(eventId);
 
   if (!event) {
     res.status(404);
     throw new Error("Event Not Found!");
   }
 
-  const newComment = await Comment.create({
+  const newComment = new Comment({
     user: userId,
     event: eventId,
     text: text,
     rating: rating,
   });
+
+  await newComment.save();
+  await (await newComment.populate("user")).populate("event");
 
   if (!newComment) {
     res.status(409);

@@ -24,6 +24,11 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       default: true,
       required: true,
+    },   
+    credits : {
+      type : Number,
+      default : 0,
+      required : true
     },
     isAdmin: {
       type: Boolean,
