@@ -11,6 +11,8 @@ import adminRoutes from "./routes/adminRoutes.js";
 import eventRoutes from "./routes/eventRoutes.js";
 import orderRoutes from "./routes/orderRoutes.js";
 import commentRoutes from "./routes/commentRoutes.js"
+import giveAnswer from "./controllers/chatController.js";
+import protect from "./middleware/authMiddleware.js";
 
 dotenv.config();
 
@@ -53,6 +55,10 @@ app.use("/api/order", orderRoutes);
 // Comment Routes
 
 app.use("/api/comment/" , commentRoutes)
+
+//Chat Routes
+
+app.post("/api/chat" , protect.forUser , giveAnswer)
 
 // Error Handler
 
