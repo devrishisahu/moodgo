@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { currentUser, orders } from '../data/mockData';
 import Footer from '../components/Footer';
+import { useSelector } from 'react-redux';
 
 const statusColors = {
   confirmed: 'bg-green-500/20 text-green-400',
@@ -9,6 +10,13 @@ const statusColors = {
 };
 
 export default function Profile() {
+
+
+    const {user} = useSelector(state => state.auth)
+
+
+
+
   const tabs = ['My Tickets', 'Activity'];
 
   return (

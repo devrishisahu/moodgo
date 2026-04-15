@@ -22,6 +22,7 @@ import AdminEditEvent from './pages/admin/AdminEditEvent';
 import AdminCreateCoupon from './pages/admin/AdminCreateCoupon';
 import AdminEditUser from './pages/admin/AdminEditUser';
 import VoltBot from './pages/VoltBot';
+import { ToastContainer } from 'react-toastify';
 
 export default function App() {
   const location = useLocation();
@@ -67,6 +68,7 @@ export default function App() {
           {/* 404 */}
           <Route path="*" element={<NotFound />} />
         </Routes>
+        <ToastContainer />
       </main>
     </div>
   );
